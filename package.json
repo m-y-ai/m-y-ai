@@ -21,18 +21,22 @@
   "license": "MIT",
   "author": "Malhar Ujawane",
   "type": "module",
-  "main": "gateway.js",
+  "main": "backend/gateway.js",
   "directories": {
     "doc": "docs"
   },
   "bin": {
-    "m-y-ai": "./cli.js"
+    "m-y-ai": "./backend/cli.js"
   },
   "scripts": {
-    "start": "node cli.js start",
-    "chat": "node cli.js chat",
-    "setup": "node cli.js setup",
-    "cli": "node cli.js"
+    "start": "node backend/cli.js start",
+    "gateway": "node backend/gateway.js",
+    "chat": "node backend/cli.js chat",
+    "setup": "node backend/cli.js setup",
+    "cli": "node backend/cli.js",
+    "dev:web": "cd ui/web && bun run dev",
+    "build:web": "cd ui/web && bun run build",
+    "start:web": "cd ui/web && bun run start"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.2.80",

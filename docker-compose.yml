@@ -1,14 +1,31 @@
 services:
-  m-y-ai:
-    build: .
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
     env_file: .env
     ports:
-      - "4096:4096"
+      - "2700:2700"   # gateway HTTP / WhatsApp QR
+      - "2701:2701"   # web adapter (SSE + POST for browser clients)
+      - "2702:2702"   # mobile-app adapter (SSE + POST for native clients)
     volumes:
-      - wa-auth:/app/auth_whatsapp
-      - memory:/home/claw/m-y-ai
+      - wa-auth:/app/backend/auth_whatsapp
+      - agent-home:/home/m-y-ai   # entire agent home persisted across restarts
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ui/web
+      dockerfile: Dockerfile
+    ports:
+      - "2703:2703"
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL:-http://localhost:2701}
+    depends_on:
+      - backend
     restart: unless-stopped
 
 volumes:
   wa-auth:
-  memory:
+  agent-home:
