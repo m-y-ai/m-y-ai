@@ -491,6 +491,11 @@ class Gateway {
             }
         }
 
+        // Close the gateway's own HTTP server (health / QR / API)
+        if (this.httpServer) {
+            await new Promise((resolve) => this.httpServer.close(resolve))
+        }
+
         console.log('[Gateway] Goodbye!')
         process.exit(0)
     }

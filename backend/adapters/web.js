@@ -1,5 +1,5 @@
 import http from 'http'
-import { randomUUID } from 'crypto'
+import { randomUUID, createHash, timingSafeEqual } from 'crypto'
 import BaseAdapter from './base.js'
 
 /**
@@ -99,7 +99,10 @@ export default class WebAdapter extends BaseAdapter {
 
   _authOk(req) {
     if (!this.config.apiKey) return true
-    return req.headers['x-api-key'] === this.config.apiKey
+    const provided = req.headers['x-api-key'] || ''
+    const expected = createHash('sha256').update(this.config.apiKey).digest()
+    const actual = createHash('sha256').update(provided).digest()
+    return timingSafeEqual(expected, actual)
   }
 
   _sseWrite(res, data) {
